@@ -13,6 +13,17 @@ socket.on('newMessage',function(message){
 
     jQuery('#messages').append(li);
 });
+
+socket.on('newLocationMessage',function(message){
+ 
+    var li=jQuery('<li></li>');
+    var a=jQuery('<a target="_blank">My Current Location</a>');
+
+    li.text(`${message.from}: `);
+    a.attr('href',message.url);
+    li.append(a);
+    jQuery('#messages').append(li);
+});
  socket.on('disconnect',function () {
    console.log('Disconnected from server');
  });
@@ -27,4 +38,20 @@ socket.on('newMessage',function(message){
  	},function(){
 
  	});
+ });
+
+ var getLocation=jQuery('#get-location');
+ getLocation.on('click',function(){
+   if(!navigator.geolocation){
+   	return alert('geolocation not suppported');
+   }
+
+   navigator.geolocation.getCurrentPosition(function(position){
+     socket.emit('createLocationMessage',{
+     	lat:position.coords.latitude,
+     	lng:position.coords.longitude
+     });
+   },function(){ 
+      alert('could not fetch location');
+   });
  });
