@@ -36,7 +36,7 @@ socket.on('newLocationMessage',function(message){
        from:"User",
        text:jQuery('[name=message]').val()
  	},function(){
-
+       jQuery('[name=message]').val('');
  	});
  });
 
@@ -46,12 +46,16 @@ socket.on('newLocationMessage',function(message){
    	return alert('geolocation not suppported');
    }
 
+   getLocation.attr('disabled','disabled').text('Sending Location..');
+
    navigator.geolocation.getCurrentPosition(function(position){
+   	getLocation.removeAttr('disabled').text('Send Location');
      socket.emit('createLocationMessage',{
      	lat:position.coords.latitude,
      	lng:position.coords.longitude
      });
    },function(){ 
       alert('could not fetch location');
+      getLocation.removeAttr('disabled').text('Send Location');
    });
  });
